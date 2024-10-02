@@ -104,7 +104,6 @@ main {
 }
 </style> -->
 
-
 <script setup>
 import { ref, onMounted } from "vue";
 import CheckboxInput from "./components/CheckboxInput.vue";
@@ -117,7 +116,7 @@ const formData = ref({
   title: "",
   seniority: "",
   stipend: "",
-  skills: [] ,
+  skills: [],
   description: "",
   companyName: "",
   remoteWork: false,
@@ -125,13 +124,20 @@ const formData = ref({
 });
 
 const companies = ref([]);
+const seniorityOptions = ref([
+  { _id: "intern", title: "کاراموز" },
+  { _id: "less_than_one_year", title: "کمتر از یک سال" },
+  { _id: "one_to_three_years", title: "یک تا سه سال" },
+  { _id: "three_to_six_years", title: "سه تا شش سال" },
+  { _id: "more_than_six_years", title: "بیش از شش سال" },
+]);
 
 onMounted(async () => {
   try {
     const response = await fetch("http://185.45.194.24:3000/api/companies");
     const data = await response.json();
-    companies.value = data.map(company => ({
-      id: company.id,
+    companies.value = data.map((company) => ({
+      _id: company._id,
       title: company.title,
     }));
   } catch (error) {
@@ -142,7 +148,7 @@ onMounted(async () => {
 
 <template>
   <header>
-    <a href="/home"> <img src="./assets/icons/logo.svg" alt="" /></a>
+    <a href="/home"><img src="./assets/icons/logo.svg" alt="" /></a>
   </header>
   <main>
     <form @keydown.enter.prevent>
@@ -156,7 +162,7 @@ onMounted(async () => {
       <SelectiveInput
         v-model="formData.seniority"
         label="سابقه کار"
-        :options="[ 'کاراموز', 'کمتر از یک سال', 'یک تا سه سال', 'سه تا شش سال', 'بیش از شش سال' ]"
+        :options="seniorityOptions"
       />
       <p>{{ formData.seniority }}</p>
       <NormalInput
@@ -177,14 +183,13 @@ onMounted(async () => {
       <SelectiveInput
         v-model="formData.companyName"
         label="نام شرکت"
-        :options="companies.map(company => company.title)"
+        :options="companies"
       />
       <p>{{ formData.companyName }}</p>
       <CheckboxInput v-model="formData.remoteWork" label="امکان دورکاری" />
       <p v-if="formData.remoteWork">{{ formData.remoteWork }}</p>
       <CheckboxInput v-model="formData.urgentAd" label="آگهی فوری" />
       <p v-if="formData.urgentAd">{{ formData.urgentAd }}</p>
-
       <button class="submit-btn" type="submit">ثــبــت</button>
     </form>
   </main>
