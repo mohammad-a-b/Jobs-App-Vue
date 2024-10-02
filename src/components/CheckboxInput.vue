@@ -1,38 +1,38 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
-  label: {
-    type: String,
-    required: true,
-  },
-  checkedValue: {
-    type: Boolean,
-    default: false,
-  },
+  label: { type: String, required: true },
+  modelValue: { type: Boolean, default: false },
 });
 
-const checked = ref(props.checkedValue);
+const emit = defineEmits(['update:modelValue']);
+const checked = ref(false);
 
-const toggleCheck = () => {
-  checked.value = !checked.value;
-};
+watch(() => props.modelValue, (newValue) => {
+  checked.value = newValue;
+});
+
+watch(checked, (newValue) => {
+  emit('update:modelValue', newValue);
+});
 </script>
 
 <template>
-  <div class="checkbox-container" @click="toggleCheck">
+  <label class="input-label">
     <input type="checkbox" v-model="checked" />
-    <label>{{ label }}</label>
-  </div>
+    <span>{{ label }}</span>
+  </label>
 </template>
 
 <style scoped>
 input {
   padding: 7px;
+  margin-top: 5px
 }
-.checkbox-container {
-  display: flex;
+.input-label {
   align-items: center;
+  display: flex;
   cursor: pointer;
   width: max-content;
 }
@@ -41,21 +41,20 @@ input[type="checkbox"] {
   margin-left: 10px;
   width: 22px;
   height: 21px;
-  background-color: #fff;
   appearance: none;
   border: 2px solid #000;
+  background-color: #fff;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  display: inline-block;
 }
 
 input[type="checkbox"]:checked::after {
-  content: "✔";
+  content: url(../assets/icons/checked.svg);
   position: absolute;
   scale: 1.2;
-  left: 4px;
-  top: -2px;
+  left: 3.5px;
+  top: 1px;
   font-size: 14px;
   color: #000;
 }
@@ -64,6 +63,5 @@ label {
   color: #000;
   user-select: none;
   font-size: 14px;
-  font-weight: 500;
 }
 </style>

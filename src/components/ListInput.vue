@@ -1,22 +1,45 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+
+const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const emit = defineEmits(["update:modelValue"]);
 
 const newSkill = ref("");
-const skills = ref([]);
+const skills = ref([...props.modelValue]);
+
 const addSkill = () => {
-  console.log(newSkill.value);
-  if (newSkill.value.trim()) {
-    skills.value.push(newSkill.value.trim());
+  const skill = newSkill.value.trim();
+  if (skill) {
+    skills.value.push(skill);
     newSkill.value = "";
+    emit("update:modelValue", skills.value);
   }
 };
-const deleteSkill = (i) => {
-  skills.value.splice(i, 1);
+
+const deleteSkill = (index) => {
+  skills.value.splice(index, 1);
+  emit("update:modelValue", skills.value);
 };
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    skills.value = [...newValue];
+  }
+);
 </script>
+
 <template>
   <div>
-    <label for="skills">مهارت‌ها  <span class="red-star-input">*</span> </label>
+    <label class="input-label" for="skills"
+      >مهارت‌ها <span class="red-star-input">*</span>
+    </label>
     <input
       id="skills"
       type="text"
@@ -24,11 +47,12 @@ const deleteSkill = (i) => {
       placeholder="مهارت را وارد کنید و Enter بزنید..."
       @keyup.enter.prevent="addSkill"
       required
-      
     />
     <ul class="skills-list">
       <li v-for="(skill, index) in skills" :key="index" class="skill-item">
-        <button @click.prevent="deleteSkill(index)" class="delete-item"> <img src="../assets/icons/deleteSkill.svg" alt=""></button>
+        <button type="button" @click="deleteSkill(index)" class="delete-item">
+          <img src="../assets/icons/deleteSkill.svg" alt="حذف مهارت" />
+        </button>
         {{ skill }}
       </li>
     </ul>
@@ -42,11 +66,11 @@ div {
 .skills-list {
   margin-top: 10px;
   display: flex;
+  flex-direction: row-reverse;
   justify-content: end;
   flex-wrap: wrap;
-  
 }
-li{
+li {
   display: flex;
   align-items: start;
 }
@@ -64,5 +88,10 @@ li{
   cursor: pointer;
   margin-left: 8px;
   height: 5px;
+}
+#skills {
+  margin: 5px 0;
+  padding: 9px 12px;
+  border-radius: 4px;
 }
 </style>

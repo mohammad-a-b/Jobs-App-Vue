@@ -1,33 +1,28 @@
 <script setup>
-import { ref } from "vue";
 defineProps({
   label: String,
-  height: String,
   placeholder: String,
-  star: {
-    type: String,
-    default: "*",
-  }, 
+  modelValue: String,
   isRequired: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 });
-const Title = ref("");
+
+const emit = defineEmits(["update:modelValue"]);
 </script>
 
 <template>
   <div>
-    <label
-      >{{ label }} <span class="red-star-input">{{ star }}</span></label
-    >
+    <label class="input-label">
+      {{ label }} <span v-if="isRequired" class="red-star-input"> * </span>
+    </label>
     <input
-      :style="{ height: height }"
       type="text"
-      v-model="Title"
+      :value="modelValue"
+      @input="(event) => emit('update:modelValue', event.target.value)"
       :placeholder="placeholder"
       :required="isRequired"
-      
     />
   </div>
 </template>
@@ -36,5 +31,9 @@ const Title = ref("");
 div {
   margin-top: 10px;
 }
-
+input {
+  margin: 5px 0;
+  padding: 9px 12px;
+  border-radius: 4px;
+}
 </style>

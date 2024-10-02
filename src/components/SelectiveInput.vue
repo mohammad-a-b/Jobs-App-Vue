@@ -1,22 +1,28 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
   label: String,
   options: Array,
+  modelValue: String,
   star: {
     type: String,
     default: "*",
   },
 });
 
-const selectedExperience = ref("");
+const emit = defineEmits(['update:modelValue']);
+
+const selectedExperience = ref(props.modelValue);
+
+watch(selectedExperience, (newValue) => {
+  emit('update:modelValue', newValue);
+});
 </script>
 
 <template>
   <div>
-    <label >{{ label }} <span class="red-star-input">{{ star }}</span></label>
-
+    <label class="input-label">{{ label }} <span class="red-star-input">{{ star }}</span></label>
     <select v-model="selectedExperience" required>
       <option disabled value="" class="disabled-option">انتخاب کنید...</option> 
       <option v-for="option in options" :key="option" :value="option">
@@ -34,14 +40,14 @@ select {
   margin: 5px 0;
   width: 100%;
   padding: 7.2px 12px;
-  border: 2px solid #000000;
+  border: 1px solid #000000;
   border-radius: 8px;
   font-size: 15px;
   cursor: pointer;
 }
 
 select:focus {
-  border: 2px #3abed5 solid;
+  border: 1px #3abed5 solid;
   outline: none;
 }
 
@@ -51,4 +57,3 @@ select:focus {
   font-weight: 200;
 }
 </style>
-<!-- :class="{ 'placeholder-active': !selectedExperience }" -->
