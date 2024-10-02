@@ -5,14 +5,13 @@ const props = defineProps({
   label: String,
   options: Array,
   modelValue: String,
-  star: {
-    type: String,
-    default: "*",
+  isRequired: {
+    type: Boolean,
+    default: true,
   },
 });
 
 const emit = defineEmits(['update:modelValue']);
-
 const selectedExperience = ref(props.modelValue);
 
 watch(selectedExperience, (newValue) => {
@@ -22,11 +21,11 @@ watch(selectedExperience, (newValue) => {
 
 <template>
   <div>
-    <label class="input-label">{{ label }} <span class="red-star-input">{{ star }}</span></label>
+    <label class="input-label">{{ label }} <span v-if="isRequired" class="red-star-input">*</span></label>
     <select v-model="selectedExperience" required>
-      <option disabled value="" class="disabled-option">انتخاب کنید...</option> 
-      <option v-for="option in options" :key="option" :value="option">
-        {{ option }}
+      <option disabled value="" class="disabled-option">انتخاب کنید...</option>
+      <option v-for="option in options" :key="option._id" :value="option._id">
+        {{ option.title }}
       </option>
     </select>
   </div>
