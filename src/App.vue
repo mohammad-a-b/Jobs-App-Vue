@@ -181,9 +181,9 @@ onMounted(async () => {
       />
       <p>{{ formData.companyName }}</p>
       <CheckboxInput v-model="formData.remoteWork" label="امکان دورکاری" />
-      <p>{{ formData.remoteWork }}</p>
+      <p v-if="formData.remoteWork">{{ formData.remoteWork }}</p>
       <CheckboxInput v-model="formData.urgentAd" label="آگهی فوری" />
-      <p>{{ formData.urgentAd }}</p>
+      <p v-if="formData.urgentAd">{{ formData.urgentAd }}</p>
 
       <button class="submit-btn" type="submit">ثــبــت</button>
     </form>
