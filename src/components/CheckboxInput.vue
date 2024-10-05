@@ -1,26 +1,11 @@
 <script setup>
-import { ref, watch } from "vue";
-
-const props = defineProps({
-  label: { type: String, required: true },
-  modelValue: { type: Boolean, default: false },
-});
-
-const emit = defineEmits(['update:modelValue']);
-const checked = ref(false);
-
-watch(() => props.modelValue, (newValue) => {
-  checked.value = newValue;
-});
-
-watch(checked, (newValue) => {
-  emit('update:modelValue', newValue);
-});
+const model = defineModel();
+const props = defineProps({ label: { type: String, required: true } });
 </script>
 
 <template>
   <label class="input-label">
-    <input type="checkbox" v-model="checked" />
+    <input type="checkbox" v-model="model" />
     <span>{{ label }}</span>
   </label>
 </template>
@@ -28,7 +13,7 @@ watch(checked, (newValue) => {
 <style scoped>
 input {
   padding: 7px;
-  margin-top: 5px
+  margin-top: 5px;
 }
 .input-label {
   align-items: center;

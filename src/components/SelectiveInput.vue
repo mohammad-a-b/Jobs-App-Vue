@@ -1,31 +1,30 @@
 <script setup>
-import { ref, watch } from "vue";
-
 const props = defineProps({
   label: String,
-  options: Array,
-  modelValue: String,
+  options: Array,      // label, value      
+ 
   isRequired: {
     type: Boolean,
     default: true,
   },
 });
 
-const emit = defineEmits(['update:modelValue']);
-const selectedExperience = ref(props.modelValue);
-
-watch(selectedExperience, (newValue) => {
-  emit('update:modelValue', newValue);
+const modelValue = defineModel({
+  value: String,
+  required: true,
 });
 </script>
 
 <template>
   <div>
-    <label class="input-label">{{ label }} <span v-if="isRequired" class="red-star-input">*</span></label>
-    <select v-model="selectedExperience" required>
+    <label class="input-label">
+      {{ label }}
+      <span v-if="isRequired" class="red-star-input">*</span>
+    </label>
+    <select v-model="modelValue" :required="isRequired">
       <option disabled value="" class="disabled-option">انتخاب کنید...</option>
-      <option v-for="option in options" :key="option._id" :value="option._id">
-        {{ option.title }}
+      <option v-for="option in options" :key="option.value" :value="option.value">
+        {{ option.label }}
       </option>
     </select>
   </div>

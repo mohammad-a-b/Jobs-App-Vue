@@ -1,109 +1,3 @@
-<!-- <script setup>
-import { ref } from "vue";
-import CheckboxInput from "./components/CheckboxInput.vue";
-import ListInput from "./components/ListInput.vue";
-import NormalInput from "./components/NormalInput.vue";
-import SelectiveInput from "./components/SelectiveInput.vue";
-import TextareaInput from "./components/textareaInput.vue";
-
-const formData = ref({
-  title: "",
-  seniority: "",
-  stipend: "",
-  skills: [],
-  description: "",
-  companyName: "",
-  remoteWork: "",
-  urgentAd: "",
-});
-</script>
-
-<template>
-  <header>
-    <a href="/home"> <img src="./assets/icons/logo.svg" alt="" /></a>
-  </header>
-  <main>
-    <form @keydown.enter.prevent>
-      <h2>ایجاد شغل جدید</h2>
-      <NormalInput
-        v-model="formData.title"
-        label="عنوان"
-        placeholder="عنوان شغلی"
-      />
-      <p>{{ formData.title }}</p>
-      <SelectiveInput
-        v-model="formData.seniority"
-        label="سابقه کار"
-        :options="[
-          'کاراموز',
-          'کمتر از یک سال',
-          'یک تا سه سال',
-          'سه تا شش سال',
-          'بیش از شش سال',
-        ]"
-      />
-      <p>{{ formData.seniority }}</p>
-      <Normal-input
-        v-model="formData.stipend"
-        :isRequired="false"
-        label="حقوق"
-        placeholder="میزان حقوق ماهیانه به میلیون تومان"
-      />
-      <p>{{ formData.stipend }}</p>
-      <ListInput v-model="formData.skills" />
-      <p>{{ formData.skills }}</p>
-      <TextareaInput
-        v-model="formData.description"
-        label="شرح"
-        placeholder="شرح وظایف، امکانات فضای شغلی و..."
-      />
-      <p>{{ formData.description }}</p>
-      <Selective-input
-        v-model="formData.companyName"
-        label="نام شرکت"
-        :options="['شرکت1', 'شرکت2', 'شرکت3', 'شرکت4']"
-      />
-      <p>{{ formData.companyName }}</p>
-      <CheckboxInput v-model="formData.remoteWork" label="امکان دورکاری" />
-      <p>{{ formData.remoteWork }}</p>
-      <CheckboxInput v-model="formData.urgentAd" label="آگهی فوری" />
-      <p>{{ formData.urgentAd }}</p>
-
-      <button class="submit-btn" type="submit">ثــبــت</button>
-    </form>
-  </main>
-</template>
-
-<style>
-main h2 {
-  font-size: 20px;
-  font-weight: 700;
-}
-main {
-  max-width: 400px;
-  padding: 20px 16px;
-  margin-top: 30px;
-  border: 1px solid #000000;
-  background-color: #f2f2f7;
-  border-radius: 24px;
-}
-
-.red-star-input {
-  color: #ff3b30;
-}
-.submit-btn {
-  background-color: #30b0c7;
-  color: #ffffff;
-  width: 100%;
-  border: 1px solid #000000;
-  padding: 10px 0;
-  font-size: 18px;
-
-  border-radius: 16px;
-  margin-top: 30px;
-}
-</style> -->
-
 <script setup>
 import { ref, onMounted } from "vue";
 import CheckboxInput from "./components/CheckboxInput.vue";
@@ -111,88 +5,124 @@ import ListInput from "./components/ListInput.vue";
 import NormalInput from "./components/NormalInput.vue";
 import SelectiveInput from "./components/SelectiveInput.vue";
 import TextareaInput from "./components/TextareaInput.vue";
+import ShowInformation from "./components/ShowInformation.vue";
 
 const formData = ref({
   title: "",
   seniority: "",
-  stipend: "",
+  salary: "",
   skills: [],
   description: "",
-  companyName: "",
-  remoteWork: false,
-  urgentAd: false,
+  companyId: "",
+  remotePossibility: false,
+  immediateRequirement: false,
 });
 
 const companies = ref([]);
 const seniorityOptions = ref([
-  { _id: "intern", title: "کاراموز" },
-  { _id: "less_than_one_year", title: "کمتر از یک سال" },
-  { _id: "one_to_three_years", title: "یک تا سه سال" },
-  { _id: "three_to_six_years", title: "سه تا شش سال" },
-  { _id: "more_than_six_years", title: "بیش از شش سال" },
+  { value: "intern", label: "کاراموز" },
+  { value: "less_than_one_year", label: "کمتر از یک سال" },
+  { value: "one_to_three_years", label: "یک تا سه سال" },
+  { value: "three_to_six_years", label: "سه تا شش سال" },
+  { value: "more_than_six_years", label: "بیش از شش سال" },
 ]);
+
+const isModalOpen = ref(false);
 
 onMounted(async () => {
   try {
     const response = await fetch("http://185.45.194.24:3000/api/companies");
     const data = await response.json();
     companies.value = data.map((company) => ({
-      _id: company._id,
-      title: company.title,
+      value: company._id,
+      label: company.title,
     }));
   } catch (error) {
     console.error("Error fetching companies:", error);
   }
 });
+
+const submitForm = async () => {
+  try {
+    const response = await fetch(
+      "http://185.45.194.24:3000/api/companies/jobs",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData.value),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to create job");
+    }
+
+    const data = await response.json();
+    console.log("Job created", data);
+    isModalOpen.value = true;
+  } catch (error) {
+    console.error("Error ...:", error);
+  }
+};
 </script>
 
 <template>
-  <header>
-    <a href="/home"><img src="./assets/icons/logo.svg" alt="" /></a>
-  </header>
-  <main>
-    <form @keydown.enter.prevent>
-      <h2>ایجاد شغل جدید</h2>
-      <NormalInput
-        v-model="formData.title"
-        label="عنوان"
-        placeholder="عنوان شغلی"
+  <body>
+    <header>
+      <a href="/home"><img src="./assets/icons/logo.svg" alt="" /></a>
+    </header>
+    <main>
+      <form @keydown.enter.prevent @submit.prevent="submitForm">
+        <h2>ایجاد شغل جدید</h2>
+        <NormalInput
+          v-model="formData.title"
+          label="عنوان"
+          placeholder="عنوان شغلی"
+        />
+        <SelectiveInput
+          v-model="formData.seniority"
+          label="سابقه کار"
+          :options="seniorityOptions"
+        />
+        <NormalInput
+          v-model="formData.salary"
+          :isRequired="false"
+          label="حقوق"
+          placeholder="میزان حقوق ماهیانه به میلیون تومان"
+          inputType="number"
+        />
+        <ListInput v-model="formData.skills" />
+        <TextareaInput
+          v-model="formData.description"
+          label="شرح"
+          placeholder="شرح وظایف، امکانات فضای شغلی و..."
+        />
+        <SelectiveInput
+          v-model="formData.companyId"
+          label="نام شرکت"
+          :options="companies"
+        />
+        <CheckboxInput
+          v-model="formData.remotePossibility"
+          label="امکان دورکاری"
+        />
+        <CheckboxInput
+          v-model="formData.immediateRequirement"
+          label="آگهی فوری"
+        />
+        <button class="submit-btn" type="submit">ثــبــت</button>
+      </form>
+
+      <ShowInformation
+        :isOpen="isModalOpen"
+        :formData="formData"
+        @close="isModalOpen = false"
+        :companies="companies"
       />
-      <p>{{ formData.title }}</p>
-      <SelectiveInput
-        v-model="formData.seniority"
-        label="سابقه کار"
-        :options="seniorityOptions"
-      />
-      <p>{{ formData.seniority }}</p>
-      <NormalInput
-        v-model="formData.stipend"
-        :isRequired="false"
-        label="حقوق"
-        placeholder="میزان حقوق ماهیانه به میلیون تومان"
-      />
-      <p>{{ formData.stipend }}</p>
-      <ListInput v-model="formData.skills" />
-      <p>{{ formData.skills }}</p>
-      <TextareaInput
-        v-model="formData.description"
-        label="شرح"
-        placeholder="شرح وظایف، امکانات فضای شغلی و..."
-      />
-      <p>{{ formData.description }}</p>
-      <SelectiveInput
-        v-model="formData.companyName"
-        label="نام شرکت"
-        :options="companies"
-      />
-      <p>{{ formData.companyName }}</p>
-      <CheckboxInput v-model="formData.remoteWork" label="امکان دورکاری" />
-      <p v-if="formData.remoteWork">{{ formData.remoteWork }}</p>
-      <CheckboxInput v-model="formData.urgentAd" label="آگهی فوری" />
-      <p v-if="formData.urgentAd">{{ formData.urgentAd }}</p>
-      <button class="submit-btn" type="submit">ثــبــت</button>
-    </form>
-  </main>
+    </main>
+  </body>
 </template>
 
 <style>
@@ -200,13 +130,25 @@ main h2 {
   font-size: 20px;
   font-weight: 700;
 }
+header {
+  display: flex;
+  justify-content: center;
+}
+body {
+  background-color: #0094e9ac;
+  background-image: linear-gradient(64deg, #1588b2 0%, #aaf3f5 95%);
+}
 main {
+  margin: 0 auto;
   max-width: 400px;
   padding: 20px 16px;
   margin-top: 30px;
   border: 1px solid #000000;
   background-color: #f2f2f7;
   border-radius: 24px;
+}
+main {
+  box-shadow: 0px 9px 50px rgba(0, 0, 0, 0.43);
 }
 
 .red-star-input {
