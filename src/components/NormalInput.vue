@@ -1,7 +1,4 @@
-
 <script setup>
-import { computed } from "vue";
-
 const props = defineProps({
   label: String,
   placeholder: String,
@@ -19,8 +16,6 @@ const modelValue = defineModel({
   value: String,
   required: true,
 });
-
-const isInvalid = computed(() => props.isRequired && !modelValue.value);
 </script>
 
 <template>
@@ -28,8 +23,12 @@ const isInvalid = computed(() => props.isRequired && !modelValue.value);
     <label class="input-label">
       {{ label }} <span v-if="isRequired" class="red-star-input">*</span>
     </label>
-    <input :type="inputType" v-model="modelValue" :placeholder="placeholder" />
-    <p v-if="isInvalid" class="error-message">باید پر شود.</p>
+    <input
+      class="no-spinner"
+      :type="inputType"
+      v-model="modelValue"
+      :placeholder="placeholder"
+    />
   </div>
 </template>
 
@@ -41,6 +40,17 @@ input {
   margin: 5px 0;
   padding: 9px 12px;
   border-radius: 4px;
+}
+.no-spinner {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .error-message {
   color: red;
