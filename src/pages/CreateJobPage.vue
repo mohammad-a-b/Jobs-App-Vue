@@ -110,6 +110,9 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
+h2{
+  margin-bottom: 20px;
+}
 main {
   margin: 0 auto;
   max-width: 400px;
