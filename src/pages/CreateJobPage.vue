@@ -128,7 +128,7 @@ main {
   border: 1px solid #000000;
   padding: 10px 0;
   font-size: 18px;
-  border-radius: 16px;
+  border-radius: 4px;
   margin-top: 30px;
 }
 </style>
