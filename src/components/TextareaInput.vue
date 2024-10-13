@@ -16,7 +16,7 @@ defineProps({
       {{ label }}
       <span class="red-star-input" v-if="isRequired">*</span>
     </label>
-    <textarea v-model="model" :placeholder="placeholder" required></textarea>
+    <textarea v-model="model" :placeholder="placeholder" ></textarea>
   </div>
 </template>
 

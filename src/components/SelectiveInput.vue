@@ -21,7 +21,7 @@ const modelValue = defineModel({
       {{ label }}
       <span v-if="isRequired" class="red-star-input">*</span>
     </label>
-    <select v-model="modelValue" :required="isRequired">
+    <select v-model="modelValue" >
       <option disabled value="" class="disabled-option">انتخاب کنید...</option>
       <option v-for="option in options" :key="option.value" :value="option.value">
         {{ option.label }}

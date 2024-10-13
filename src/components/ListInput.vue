@@ -1,6 +1,7 @@
-
 <script setup>
-const model = defineModel();
+const model = defineModel({
+  required: true,
+});
 const newItem = defineModel(" ");
 
 const addItem = () => {

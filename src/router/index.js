@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import CreateJob from "@/pages/CreateJob.vue";
-import JobList from "@/pages/JobList.vue";
+import CreateJob from "@/pages/CreateJobPage.vue";
+import JobList from "@/pages/JobListPage.vue";
 
 const routes = [
   { path: "/jobs/create", component: CreateJob },

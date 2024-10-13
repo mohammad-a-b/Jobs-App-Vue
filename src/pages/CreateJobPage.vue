@@ -81,7 +81,6 @@ const submitForm = async () => {
       />
       <NormalInput
         v-model="formData.salary"
-        :isRequired="false"
         label="حقوق"
         placeholder="میزان حقوق ماهیانه به میلیون تومان"
         inputType="number"

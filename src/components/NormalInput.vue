@@ -24,10 +24,9 @@ const modelValue = defineModel({
       {{ label }} <span v-if="isRequired" class="red-star-input">*</span>
     </label>
     <input
-      class="no-spinner"
       :type="inputType"
       v-model="modelValue"
-      :placeholder="placeholder"
+      :placeholder="placeholder"  
     />
   </div>
 </template>
@@ -41,14 +40,14 @@ input {
   padding: 9px 12px;
   border-radius: 4px;
 }
-.no-spinner {
+input[type="number"] {
   -moz-appearance: textfield;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.no-spinner::-webkit-inner-spin-button,
-.no-spinner::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

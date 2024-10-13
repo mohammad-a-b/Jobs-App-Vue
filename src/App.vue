@@ -4,6 +4,7 @@
     <header>
       <a href="/jobs/create"
         ><img src="./assets/icons/logo.svg" alt="Logo"
+        
       /></a>
     </header>
     <main>
@@ -14,14 +15,13 @@
 
 <style>
 header {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+ margin-bottom: 20px;
+ display: flex;
+ justify-content: center;
+ border-bottom: 1px solid #c6c6c6;
 }
-body {
-  background-color: #0094e9ac;
-  background-image: linear-gradient(64deg, #1588b2 0%, #aaf3f5 95%);
-}
+
+
 .red-star-input {
   color: #ff3b30;
 }
