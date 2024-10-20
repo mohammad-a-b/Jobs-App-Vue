@@ -1,22 +1,53 @@
 <script setup>
-const model = defineModel();
-defineProps({
+import { ref } from 'vue';
+
+const props = defineProps({
   label: String,
   placeholder: String,
   isRequired: {
     type: Boolean,
     default: true,
   },
+  errorMessage: {
+    type: String,
+    default: ""
+  }
 });
+
+const modelValue = defineModel({
+  value: String,
+  required: true,
+});
+
+const showError = ref(false);
+const errorMsg = ref("");
+
+const validateInput = () => {
+  if (props.isRequired && !modelValue.value) {
+    errorMsg.value = "این فیلد الزامی است.";
+    showError.value = true;
+  } else {
+    errorMsg.value = "";
+    showError.value = false;
+  }
+};
+
+const handleBlur = () => {
+  validateInput();
+};
 </script>
 
 <template>
   <div>
     <label class="input-label">
-      {{ label }}
-      <span class="red-star-input" v-if="isRequired">*</span>
+      {{ label }} <span v-if="props.isRequired" class="red-star-input">*</span>
     </label>
-    <textarea v-model="model" :placeholder="placeholder" ></textarea>
+    <textarea
+      v-model="modelValue"
+      :placeholder="placeholder"
+      @blur="handleBlur"
+    ></textarea>
+    <p v-if="(showError || errorMessage) && !modelValue" class="error-message">{{ errorMessage || errorMsg }}</p>
   </div>
 </template>
 
@@ -30,9 +61,14 @@ textarea {
   border: 1px solid #000000;
   resize: vertical;
 }
-
 textarea:focus {
   border-color: #30b0c7;
   outline: none;
+}
+.error-message {
+  color: red;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 5px;
 }
 </style>

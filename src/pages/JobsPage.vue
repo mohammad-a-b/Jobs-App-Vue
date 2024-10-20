@@ -24,25 +24,27 @@ const formatSalary = (salary) => {
 
 onMounted(fetchJobs);
 </script>
-
 <template>
   <div class="job-list">
     <h1>شغل‌ها</h1>
     <div v-if="loading">در حال بارگذاری...</div>
     <div v-for="job in jobs" :key="job.id" class="job-item">
-      <div class="name-and-logo">
-        <img :src="job.companyId.logo" alt="لوگوی شرکت" class="company-logo" />
-        <p class="company-title">{{ job.companyId.title }}</p>
-      </div>
-      <h2 :class="{ urgent: job.immediateRequirement }">{{ job.title }}</h2>
-      <div class="description">
-        <p>{{ job.remotePossibility ? "دورکاری" : "حضوری" }}</p>
-        <p>. | {{ formatSalary(job.salary) }}</p>
-      </div>
+      <router-link :to="`/jobs/${job._id}`">
+        <div class="name-and-logo">
+          <img :src="job.companyId.logo" alt="لوگوی شرکت" class="company-logo" />
+          <p class="company-title">{{ job.companyId.title }}</p>
+        </div>
+        <h2 :class="{ urgent: job.immediateRequirement }">{{ job.title }}</h2>
+        <div class="description">
+          <p>{{ job.remotePossibility ? "دورکاری" : "حضوری" }}</p>
+          <p>. | {{ formatSalary(job.salary) }}</p>
+        </div>
+      </router-link>
     </div>
     <router-link to="/jobs/create">برو به صفحه ایجاد</router-link>
   </div>
 </template>
+
 
 <style scoped>
 h1 {

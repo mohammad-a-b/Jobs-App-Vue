@@ -1,3 +1,4 @@
+
 <script setup>
 import { ref, onMounted } from "vue";
 import CheckboxInput from "../components/CheckboxInput.vue";
@@ -6,6 +7,7 @@ import NormalInput from "../components/NormalInput.vue";
 import SelectiveInput from "../components/SelectiveInput.vue";
 import TextareaInput from "../components/TextareaInput.vue";
 import { useRouter } from "vue-router";
+
 const BASE_URL = "http://185.45.194.24:3000/api";
 
 const formData = ref({
@@ -17,6 +19,12 @@ const formData = ref({
   companyId: "",
   remotePossibility: false,
   immediateRequirement: false,
+});
+
+const errorMessages = ref({
+  title: "",
+  salary: "",
+  description: "",
 });
 
 const companies = ref([]);
@@ -43,7 +51,31 @@ onMounted(async () => {
   }
 });
 
+// تابع ولیدیشن برای فرم
+const validateForm = () => {
+  errorMessages.value.title = formData.value.title
+    ? ""
+    : "عنوان نمی‌تواند خالی باشد.";
+  errorMessages.value.seniority = formData.value.seniority
+    ? ""
+    : "سابقه کار نمی‌تواند خالی باشد.";
+  errorMessages.value.salary = formData.value.salary
+    ? ""
+    : "حقوق نمی‌تواند خالی باشد.";
+  errorMessages.value.description = formData.value.description
+    ? ""
+    : "شرح نمی‌تواند خالی باشد.";
+  errorMessages.value.companyId = formData.value.companyId
+    ? ""
+    : "نام شرکت نمی‌تواند خالی باشد.";
+};
+
 const submitForm = async () => {
+  validateForm(); // ولیدیشن فرم قبل از ارسال
+  if (Object.values(errorMessages.value).some((msg) => msg)) {
+    return; // اگر خطایی وجود داشت، ارسال فرم متوقف می‌شود
+  }
+
   try {
     const response = await fetch(`${BASE_URL}/jobs`, {
       method: "POST",
@@ -73,6 +105,7 @@ const submitForm = async () => {
         v-model="formData.title"
         label="عنوان"
         placeholder="عنوان شغلی"
+        :errorMessage="errorMessages.title"
       />
       <SelectiveInput
         v-model="formData.seniority"
@@ -84,12 +117,14 @@ const submitForm = async () => {
         label="حقوق"
         placeholder="میزان حقوق ماهیانه به میلیون تومان"
         inputType="number"
+        :errorMessage="errorMessages.salary"
       />
       <ListInput v-model="formData.skills" />
       <TextareaInput
         v-model="formData.description"
         label="شرح"
         placeholder="شرح وظایف، امکانات فضای شغلی و..."
+        :errorMessage="errorMessages.description"
       />
       <SelectiveInput
         v-model="formData.companyId"
@@ -110,7 +145,7 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
-h2{
+h2 {
   margin-bottom: 20px;
 }
 main {

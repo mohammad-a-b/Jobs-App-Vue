@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
   label: String,
   placeholder: String,
@@ -10,12 +12,26 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  errorMessage: {
+    type: String,
+    default: ""
+  }
 });
 
 const modelValue = defineModel({
   value: String,
   required: true,
 });
+
+const showError = ref(false);
+
+const handleBlur = () => {
+  if (props.isRequired && !modelValue.value) {
+    showError.value = true;
+  } else {
+    showError.value = false;
+  }
+};
 </script>
 
 <template>
@@ -26,8 +42,10 @@ const modelValue = defineModel({
     <input
       :type="inputType"
       v-model="modelValue"
-      :placeholder="placeholder"  
+      :placeholder="placeholder"
+      @blur="handleBlur"
     />
+    <p v-if="(showError || errorMessage)&&!modelValue" class="error-message">{{ errorMessage || "این فیلد الزامی است" }}</p>
   </div>
 </template>
 
