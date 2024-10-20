@@ -51,7 +51,6 @@ onMounted(async () => {
   }
 });
 
-// تابع ولیدیشن برای فرم
 const validateForm = () => {
   errorMessages.value.title = formData.value.title
     ? ""
@@ -71,9 +70,9 @@ const validateForm = () => {
 };
 
 const submitForm = async () => {
-  validateForm(); // ولیدیشن فرم قبل از ارسال
+  validateForm(); 
   if (Object.values(errorMessages.value).some((msg) => msg)) {
-    return; // اگر خطایی وجود داشت، ارسال فرم متوقف می‌شود
+    return; 
   }
 
   try {
