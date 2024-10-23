@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
-
+const BASE_URL = "http://185.45.194.24:3000/api";
 const jobs = ref([]);
 const loading = ref(false);
 
 const fetchJobs = async () => {
   loading.value = true;
   try {
-    const response = await fetch("http://185.45.194.24:3000/api/jobs");
+    const response = await fetch(`${BASE_URL}/jobs`);
     if (!response.ok) throw new Error("خطا در بارگذاری شغل‌ها");
     jobs.value = await response.json();
   } catch (err) {

@@ -51,6 +51,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+const BASE_URL = "http://185.45.194.24:3000/api";
 
 const route = useRoute();
 const jobId = route.params.id;
@@ -68,7 +69,7 @@ const seniorityLabels = {
 const fetchJobDetail = async () => {
   loading.value = true;
   try {
-    const response = await fetch(`http://185.45.194.24:3000/api/jobs/${jobId}`);
+    const response = await fetch(`${BASE_URL}/jobs/${jobId}`);
     if (!response.ok) throw new Error("خطا در بارگذاری جزئیات شغل");
     job.value = await response.json();
   } catch (err) {
