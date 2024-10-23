@@ -2,10 +2,10 @@
 <template>
   <div id="app">
     <header>
-      <a href="/jobs/create"
+      <router-link to ="/jobs/create"
         ><img src="./assets/icons/logo.svg" alt="Logo"
         
-      /></a>
+      /></router-link>
     </header>
     <main>
       <router-view />

@@ -32,6 +32,15 @@ const handleBlur = () => {
     showError.value = false;
   }
 };
+
+const blockInvalidKeys = (event) => {
+  if (props.inputType === 'number') {
+    const invalidKeys = ['e', '.', '-', '+'];
+    if (invalidKeys.includes(event.key)) {
+      event.preventDefault();
+    }
+  }
+};
 </script>
 
 <template>
@@ -43,6 +52,7 @@ const handleBlur = () => {
       :type="inputType"
       v-model="modelValue"
       :placeholder="placeholder"
+      @keydown="blockInvalidKeys"
       @blur="handleBlur"
     />
     <p v-if="(showError || errorMessage)&&!modelValue" class="error-message">{{ errorMessage || "این فیلد الزامی است" }}</p>

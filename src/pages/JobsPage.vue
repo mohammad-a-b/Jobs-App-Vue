@@ -5,7 +5,7 @@ const jobs = ref([]);
 const loading = ref(false);
 
 const fetchJobs = async () => {
-  loading.value=true
+  loading.value = true;
   try {
     const response = await fetch("http://185.45.194.24:3000/api/jobs");
     if (!response.ok) throw new Error("خطا در بارگذاری شغل‌ها");
@@ -19,7 +19,7 @@ const fetchJobs = async () => {
 
 const formatSalary = (salary) => {
   if (salary === 0) return "توافقی";
-  return "ماهانه " + (salary * 1000000).toLocaleString("fa-IR") + " تومان";
+  return "ماهانه " + salary.toLocaleString("fa-IR") + " تومان";
 };
 
 onMounted(fetchJobs);
@@ -28,23 +28,33 @@ onMounted(fetchJobs);
   <div class="job-list">
     <h1>شغل‌ها</h1>
     <div v-if="loading">در حال بارگذاری...</div>
-    <div v-for="job in jobs" :key="job.id" class="job-item">
-      <router-link :to="`/jobs/${job._id}`">
-        <div class="name-and-logo">
-          <img :src="job.companyId.logo" alt="لوگوی شرکت" class="company-logo" />
-          <p class="company-title">{{ job.companyId.title }}</p>
+    <div v-else>
+      <p v-if="jobs.length === 0"></p>
+      <div v-else>
+        <div v-for="job in jobs" :key="job.id" class="job-item">
+          <router-link :to="`/jobs/${job._id}`">
+            <div class="name-and-logo">
+              <img
+                :src="job.companyId.logo"
+                alt="لوگوی شرکت"
+                class="company-logo"
+              />
+              <p class="company-title">{{ job.companyId.title }}</p>
+            </div>
+            <h2 :class="{ urgent: job.immediateRequirement }">
+              {{ job.title }}
+            </h2>
+            <div class="description">
+              <p>{{ job.remotePossibility ? "دورکاری" : "حضوری" }}</p>
+              <p>&nbsp; | {{ formatSalary(job.salary) }}</p>
+            </div>
+          </router-link>
         </div>
-        <h2 :class="{ urgent: job.immediateRequirement }">{{ job.title }}</h2>
-        <div class="description">
-          <p>{{ job.remotePossibility ? "دورکاری" : "حضوری" }}</p>
-          <p>. | {{ formatSalary(job.salary) }}</p>
-        </div>
-      </router-link>
+      </div>
     </div>
-    <router-link to="/jobs/create">برو به صفحه ایجاد</router-link>
+    <router-link to="/jobs/create">برو به صفحه ایجاد📄</router-link>
   </div>
 </template>
-
 
 <style scoped>
 h1 {
@@ -67,7 +77,7 @@ h1 {
   background-color: #fff;
   border: 1px solid #000000;
   border-radius: 12px;
-   cursor: pointer;
+  cursor: pointer;
 }
 .company-title {
   font-size: 12px;

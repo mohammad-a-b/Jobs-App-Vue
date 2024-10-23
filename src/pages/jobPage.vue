@@ -4,39 +4,44 @@
     <div v-else-if="job">
       <div class="company-info">
         <img :src="job.companyId.logo" alt="لوگوی شرکت" class="company-logo" />
-        <h2 class="company-title">
-          {{ job.companyId.title }}
-        </h2>
+        <h2 class="company-title">{{ job.companyId.title }}</h2>
       </div>
-      <div class="i-f"> 
-      <p class="job-title">{{ job.title }}</p>
-      <span v-if="job.immediateRequirement" class="urgent">(استخدام فوری)</span>
-    </div>
+      <div class="i-f">
+        <p class="job-title">{{ job.title }}</p>
+        <span v-if="job.immediateRequirement" class="urgent"
+        >(استخدام فوری)</span
+        >
+      </div>
       <div class="job-detail">
         <h1>اطلاعات بیشتر</h1>
-  
+        <div class="detail-item">
+          <p class="detail-title">سابقه کاری:</p>
+          <p class="detail-value">{{ getSeniorityLabel(job.seniority) }}</p>
+        </div>
+        
+        <div class="detail-item">
+          <p class="detail-title">مهارت‌های موردنیاز</p>
+          <ul class="skills-list">
+            <li v-for="skill in job.skills" :key="skill" class="skill-item">
+              {{ skill }}
+            </li>
+          </ul>
+        </div>
         <div class="detail-item">
           <p class="detail-title">میزان حقوق</p>
           <p class="detail-value">{{ formatSalary(job.salary) }}</p>
         </div>
         <div class="detail-item">
           <p class="detail-title">نوع همکاری:</p>
-          <p class="detail-value">{{ job.remotePossibility ? "دورکاری" : "حضوری" }}</p>
+          <p class="detail-value">
+            {{ job.remotePossibility ? "دورکاری" : "حضوری" }}
+          </p>
         </div>
-        <div class="detail-item">
-          <p class="detail-title">سابقه کاری:</p>
-          <p class="detail-value">{{ job.experience }} سال</p>
-        </div>
-        <div class="detail-item">
-          <p class="detail-title">مهارت‌های موردنیاز</p>
-          <ul class="skills-list">
-            <li v-for="skill in job.skills" :key="skill" class="skill-item">{{ skill }}</li>
-          </ul>
-        </div>
-        <div class="detail-item">
+        <div class="detail-item item-description">
           <p class="detail-title">شرح موقعیت شغلی</p>
-          <p class="detail-value">{{ job.description }}</p>
+          <p class="detail-value job-description">{{ job.description }}</p>
         </div>
+        <router-link class="link" to="/jobs">برو به لیست شغل‌ها📃></router-link>
       </div>
     </div>
     <div v-else>شغلی پیدا نشد</div>
@@ -44,19 +49,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 
 const route = useRoute();
 const jobId = route.params.id;
 const job = ref(null);
 const loading = ref(true);
 
+const seniorityLabels = {
+  intern: "کارآموز",
+  less_than_one_year: "کمتر از یک سال",
+  one_to_three_years: "یک تا سه سال",
+  three_to_six_years: "سه تا شش سال",
+  more_than_six_years: "بیش از شش سال",
+};
+
 const fetchJobDetail = async () => {
   loading.value = true;
   try {
     const response = await fetch(`http://185.45.194.24:3000/api/jobs/${jobId}`);
-    if (!response.ok) throw new Error('خطا در بارگذاری جزئیات شغل');
+    if (!response.ok) throw new Error("خطا در بارگذاری جزئیات شغل");
     job.value = await response.json();
   } catch (err) {
     console.error(err);
@@ -65,9 +78,13 @@ const fetchJobDetail = async () => {
   }
 };
 
+const getSeniorityLabel = (seniority) => {
+  return seniorityLabels[seniority] || "ناشناخته";
+};
+
 const formatSalary = (salary) => {
   if (salary === 0) return "توافقی";
-  return "ماهانه " + (salary * 1000000).toLocaleString("fa-IR") + " تومان";
+  return "ماهانه " + salary.toLocaleString("fa-IR") + " تومان";
 };
 
 onMounted(fetchJobDetail);
@@ -81,6 +98,7 @@ onMounted(fetchJobDetail);
   background-color: #f2f2f7;
   border-radius: 24px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #000000;
 }
 
 h1 {
@@ -103,7 +121,7 @@ h1 {
   font-weight: 500;
   margin-left: 10px;
 }
-.i-f{
+.i-f {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -126,24 +144,24 @@ h1 {
   font-size: 18px;
   font-weight: bold;
   margin: 5px 0;
-
 }
 
 .detail-item {
   display: flex;
   justify-content: space-between;
   margin: 5px 0;
-  padding: 5px 0;}
+  padding: 5px 0;
+}
 
 .detail-title {
-  font-weight: bold;
-  flex: 1;
-  text-align: right;
+  font-weight: 500;
+  font-size: 14px;
+  color: #8e8e93;
 }
 
 .detail-value {
-  flex: 2;
-  text-align: right;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .skills-list {
@@ -155,11 +173,28 @@ h1 {
 }
 
 .skill-item {
-  background-color: #E5E5EA;
+  background-color: #e5e5ea;
   padding: 4px 8px;
   border-radius: 14px;
   margin-right: 5px;
   margin-bottom: 5px;
   font-size: 12px;
+}
+
+.job-description {
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  margin-top: 10px;
+}
+
+.item-description {
+  display: flex;
+  flex-direction: column;
+}
+.link{
+  color: #7c86b9;
+  font-weight: 700;
+  
 }
 </style>

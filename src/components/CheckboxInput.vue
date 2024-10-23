@@ -13,9 +13,10 @@ const props = defineProps({ label: { type: String, required: true } });
 <style scoped>
 input {
   padding: 7px;
-  margin-top: 5px;
+
 }
 .input-label {
+  margin-top: 10px;
   align-items: center;
   display: flex;
   cursor: pointer;

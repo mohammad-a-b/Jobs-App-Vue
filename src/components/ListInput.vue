@@ -1,42 +1,49 @@
 <script setup>
-const model = defineModel({
-  required: true,
-});
-const newItem = defineModel(" ");
+import { ref } from "vue";
 
-const addItem = () => {
-  const item = newItem.value.trim();
-  if (item) {
-    model.value.push(item);
-    newItem.value = "";
+const props = defineProps({
+  label: String,
+  errorMessage: String,
+});
+
+const model = defineModel();
+const newSkill = ref("");
+
+const addSkill = () => {
+  if (newSkill.value.trim()) {
+    model.value.push(newSkill.value.trim());
+    newSkill.value = "";
   }
 };
 
-const deleteItem = (index) => {
+const removeSkill = (index) => {
   model.value.splice(index, 1);
 };
 </script>
 
 <template>
   <div>
-    <label class="input-label"
-      >مهارت‌ها <span class="red-star-input">*</span></label
-    >
-    <input
-      type="text"
-      v-model="newItem"
-      placeholder="مهارت را وارد کنید و Enter بزنید..."
-      @keyup.enter.prevent="addItem"
-      id="skills"
-    />
+    <label>{{ label }}</label>
+    <div>
+      <input
+        id="skills"
+        v-model="newSkill"
+        type="text"
+        placeholder="مهارت جدید را وارد کنید"
+        @keydown.enter.prevent="addSkill"
+      />
+    </div>
+
     <ul class="skills-list">
-      <li v-for="(item, index) in model" :key="index" class="skill-item">
-        <button type="button" @click="deleteItem(index)" class="delete-item">
-          <img src="../assets/icons/deleteSkill.svg" alt="حذف مهارت" />
-        </button>
-        {{ item }}
+      <li v-for="(skill, index) in model" :key="index" class="skill-item">
+        <span class="delete-item" @click="removeSkill(index)">✖</span>
+        {{ skill }}
       </li>
     </ul>
+
+    <p v-if="errorMessage && model.length === 0" class="error">
+      {{ errorMessage }}
+    </p>
   </div>
 </template>
 
@@ -44,6 +51,7 @@ const deleteItem = (index) => {
 div {
   margin-top: 10px;
 }
+
 .skills-list {
   margin-top: 10px;
   display: flex;
@@ -51,10 +59,12 @@ div {
   justify-content: end;
   flex-wrap: wrap;
 }
+
 li {
   display: flex;
   align-items: start;
 }
+
 .skill-item {
   background-color: #ffffff;
   padding: 0px 10px;
@@ -63,14 +73,24 @@ li {
   margin-right: 5px;
   margin-bottom: 5px;
 }
+
 .delete-item {
   cursor: pointer;
   margin-left: 8px;
   height: 5px;
 }
+
 #skills {
   margin: 5px 0;
   padding: 9px 12px;
   border-radius: 4px;
+  border: 1px solid #000000;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 5px;
 }
 </style>
