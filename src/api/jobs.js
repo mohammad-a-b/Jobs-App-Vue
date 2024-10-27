@@ -13,6 +13,13 @@ export const fetchJobDetail = async (jobId) => {
   return await response.json();
 };
 
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> a689fa7216622513fbb1b078b3af2336d38f05fa
 export const fetchCompanies = async () => {
   try {
     const response = await fetch(`${BASE_URL}/companies`);
@@ -20,7 +27,11 @@ export const fetchCompanies = async () => {
     return await response.json();
   } catch (error) {
     console.error(error);
+<<<<<<< HEAD
     throw error;
+=======
+    throw error; // می‌توان این خط را برای مدیریت بهتر خطاها و نمایش به کاربر استفاده کرد
+>>>>>>> a689fa7216622513fbb1b078b3af2336d38f05fa
   }
 };
 
@@ -38,6 +49,12 @@ export const createJob = async (jobData) => {
     return await response.json();
   } catch (error) {
     console.error(error);
+<<<<<<< HEAD
     throw error;
   }
 };
+=======
+    throw error; // می‌توان این خط را برای مدیریت بهتر خطاها و نمایش به کاربر استفاده کرد
+  }
+};
+>>>>>>> a689fa7216622513fbb1b078b3af2336d38f05fa
