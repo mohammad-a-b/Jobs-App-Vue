@@ -79,10 +79,5 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.error-message {
-  color: red;
-  font-size: 12px;
-  font-weight: 700;
-  margin-top: 5px;
-}
+
 </style>

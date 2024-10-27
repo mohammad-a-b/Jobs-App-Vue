@@ -40,3 +40,9 @@ a {
   text-decoration: none;
   color: #000000;
 }
+.error-message {
+  color: red;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 5px;
+}

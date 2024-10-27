@@ -1,3 +1,44 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { fetchJobDetail } from "@/api/jobs";
+
+const route = useRoute();
+const jobId = route.params.id;
+const job = ref(null);
+const loading = ref(true);
+
+const seniorityLabels = {
+  intern: "کارآموز",
+  less_than_one_year: "کمتر از یک سال",
+  one_to_three_years: "یک تا سه سال",
+  three_to_six_years: "سه تا شش سال",
+  more_than_six_years: "بیش از شش سال",
+};
+
+const loadJobDetail = async () => {
+  loading.value = true;
+  try {
+    job.value = await fetchJobDetail(jobId);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getSeniorityLabel = (seniority) => {
+  return seniorityLabels[seniority] || "ناشناخته";
+};
+
+const formatSalary = (salary) => {
+  return salary === 0
+    ? "توافقی"
+    : `ماهانه ${salary.toLocaleString("fa-IR")} تومان`;
+};
+
+onMounted(loadJobDetail);
+</script>
 <template>
   <div>
     <div v-if="loading">در حال بارگذاری...</div>
@@ -9,7 +50,7 @@
       <div class="i-f">
         <p class="job-title">{{ job.title }}</p>
         <span v-if="job.immediateRequirement" class="urgent"
-        >(استخدام فوری)</span
+          >(استخدام فوری)</span
         >
       </div>
       <div class="job-detail">
@@ -18,7 +59,6 @@
           <p class="detail-title">سابقه کاری:</p>
           <p class="detail-value">{{ getSeniorityLabel(job.seniority) }}</p>
         </div>
-        
         <div class="detail-item">
           <p class="detail-title">مهارت‌های موردنیاز</p>
           <ul class="skills-list">
@@ -41,55 +81,14 @@
           <p class="detail-title">شرح موقعیت شغلی</p>
           <p class="detail-value job-description">{{ job.description }}</p>
         </div>
-        <router-link class="link" to="/jobs">برو به لیست شغل‌ها📃></router-link>
+        <router-link to="/jobs">
+          <button class="back-button">⇦</button></router-link
+        >
       </div>
     </div>
     <div v-else>شغلی پیدا نشد</div>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-const BASE_URL = "http://185.45.194.24:3000/api";
-
-const route = useRoute();
-const jobId = route.params.id;
-const job = ref(null);
-const loading = ref(true);
-
-const seniorityLabels = {
-  intern: "کارآموز",
-  less_than_one_year: "کمتر از یک سال",
-  one_to_three_years: "یک تا سه سال",
-  three_to_six_years: "سه تا شش سال",
-  more_than_six_years: "بیش از شش سال",
-};
-
-const fetchJobDetail = async () => {
-  loading.value = true;
-  try {
-    const response = await fetch(`${BASE_URL}/jobs/${jobId}`);
-    if (!response.ok) throw new Error("خطا در بارگذاری جزئیات شغل");
-    job.value = await response.json();
-  } catch (err) {
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const getSeniorityLabel = (seniority) => {
-  return seniorityLabels[seniority] || "ناشناخته";
-};
-
-const formatSalary = (salary) => {
-  if (salary === 0) return "توافقی";
-  return "ماهانه " + salary.toLocaleString("fa-IR") + " تومان";
-};
-
-onMounted(fetchJobDetail);
-</script>
 
 <style scoped>
 .job-detail {
@@ -100,6 +99,17 @@ onMounted(fetchJobDetail);
   border-radius: 24px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid #000000;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  top: 13px;
+  left: 20px;
+  scale: 1.4;
+  font-size: 24px;
+  cursor: pointer;
+  color: #b2b2b2af;
 }
 
 h1 {
@@ -122,6 +132,7 @@ h1 {
   font-weight: 500;
   margin-left: 10px;
 }
+
 .i-f {
   display: flex;
   justify-content: center;
@@ -182,20 +193,8 @@ h1 {
   font-size: 12px;
 }
 
-.job-description {
-  width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-all;
-  margin-top: 10px;
-}
-
 .item-description {
   display: flex;
   flex-direction: column;
-}
-.link{
-  color: #7c86b9;
-  font-weight: 700;
-  
 }
 </style>

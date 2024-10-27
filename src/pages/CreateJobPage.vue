@@ -6,8 +6,7 @@ import NormalInput from "../components/NormalInput.vue";
 import SelectiveInput from "../components/SelectiveInput.vue";
 import TextareaInput from "../components/TextareaInput.vue";
 import { useRouter } from "vue-router";
-
-const BASE_URL = "http://185.45.194.24:3000/api";
+import { fetchCompanies, createJob } from "@/api/jobs.js";
 
 const formData = ref({
   title: "",
@@ -20,15 +19,7 @@ const formData = ref({
   immediateRequirement: false,
 });
 
-const errorMessages = ref({
-  title: "",
-  seniority: "",
-  salary: "",
-  skills: "",
-  description: "",
-  companyId: "",
-});
-
+const errorMessages = ref({});
 const companies = ref([]);
 const seniorityOptions = ref([
   { value: "intern", label: "کارآموز" },
@@ -38,70 +29,53 @@ const seniorityOptions = ref([
   { value: "more_than_six_years", label: "بیش از شش سال" },
 ]);
 
+const successMessage = ref("");
 const router = useRouter();
 
 onMounted(async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/companies`);
-    const data = await response.json();
-    companies.value = data.map((company) => ({
-      value: company._id,
-      label: company.title,
-    }));
-  } catch (error) {
-    console.error("Error fetching companies:", error);
-  }
+  const data = await fetchCompanies();
+  companies.value = data.map((company) => ({
+    value: company._id,
+    label: company.title,
+  }));
 });
 
-const validateForm = () => {
-  errorMessages.value.title = formData.value.title
-    ? ""
-    : "عنوان نمی‌تواند خالی باشد.";
-  errorMessages.value.seniority = formData.value.seniority
-    ? ""
-    : "سابقه کار نمی‌تواند خالی باشد.";
-  errorMessages.value.salary = formData.value.salary
-    ? ""
-    : "حقوق نمی‌تواند خالی باشد.";
-    errorMessages.value.skills = formData.value.skills.length
-    ? ""
-    : "لیست مهارت‌ها نمی‌تواند خالی باشد."; 
-  errorMessages.value.description = formData.value.description
-    ? ""
-    : "شرح نمی‌تواند خالی باشد.";
-  errorMessages.value.companyId = formData.value.companyId
-    ? ""
-    : "نام شرکت نمی‌تواند خالی باشد.";
+const validateField = (field, message) => {
+  errorMessages.value[field] = formData.value[field] ? "" : message;
 };
+
+const validateSkills = () => {
+  errorMessages.value.skills =
+    formData.value.skills.length > 0
+      ? ""
+      : "لیست مهارت‌ها نمی‌تواند خالی باشد.";
+};
+
+const validateForm = () => {
+  validateField("title", "عنوان نمی‌تواند خالی باشد.");
+  validateField("seniority", "سابقه کار نمی‌تواند خالی باشد.");
+  validateField("salary", "حقوق نمی‌تواند خالی باشد.");
+  validateSkills();
+  validateField("description", "شرح نمی‌تواند خالی باشد.");
+  validateField("companyId", "نام شرکت نمی‌تواند خالی باشد.");
+};
+
 const submitForm = async () => {
   validateForm();
-  if (Object.values(errorMessages.value).some((msg) => msg)) {
-    return;
-  }
+  if (Object.values(errorMessages.value).some((msg) => msg)) return;
 
-  try {
-    const response = await fetch(`${BASE_URL}/jobs`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData.value),
-    });
+  await createJob(formData.value);
+  successMessage.value = "شغل با موفقیت ایجاد شد.";
 
-    if (!response.ok) {
-      throw new Error("Failed to create job");
-    }
-
-    await response.json();
+  setTimeout(() => {
     router.push("/jobs");
-  } catch (error) {
-    console.error("Error submitting form:", error);
-  }
+  }, 1000);
 };
 </script>
 
 <template>
   <main>
+    <router-link to="/jobs">لیست شغل ها</router-link>
     <form @keydown.enter.prevent @submit.prevent="submitForm">
       <h2>ایجاد شغل جدید</h2>
       <NormalInput
@@ -126,7 +100,7 @@ const submitForm = async () => {
       <ListInput
         v-model="formData.skills"
         label="مهارت‌ها"
-        :errorMessage="errorMessages.skills" 
+        :errorMessage="errorMessages.skills"
       />
       <TextareaInput
         v-model="formData.description"
@@ -150,6 +124,10 @@ const submitForm = async () => {
       />
       <button class="submit-btn" type="submit">ثــبــت</button>
     </form>
+
+    <div v-if="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
   </main>
 </template>
 
@@ -158,7 +136,7 @@ h2 {
   margin-bottom: 20px;
 }
 main {
-  margin: 0 auto; 
+  margin: 0 auto;
   max-width: 400px;
   padding: 20px 16px;
   margin-top: 30px;
@@ -167,7 +145,6 @@ main {
   border-radius: 24px;
   box-shadow: 0px 9px 50px rgba(0, 0, 0, 0.43);
 }
-
 .submit-btn {
   background-color: #30b0c7;
   color: #ffffff;
@@ -177,5 +154,13 @@ main {
   font-size: 18px;
   border-radius: 4px;
   margin-top: 30px;
+}
+.success-message {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
 }
 </style>
