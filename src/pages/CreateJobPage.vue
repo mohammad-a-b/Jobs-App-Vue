@@ -6,7 +6,7 @@ import NormalInput from "../components/NormalInput.vue";
 import SelectiveInput from "../components/SelectiveInput.vue";
 import TextareaInput from "../components/TextareaInput.vue";
 import { useRouter } from "vue-router";
-import { fetchCompanies, createJob } from "@/api/jobs.js";
+import { fetchCompanies, createJob } from "@/api/jobs.js"
 
 const formData = ref({
   title: "",
