@@ -72,10 +72,11 @@ const submitForm = async () => {
   }, 1000);
 };
 </script>
-
 <template>
   <main>
-    <router-link to="/jobs">لیست شغل ها</router-link>
+    <div class="link-container">
+      <router-link to="/jobs">لیست شغل‌ها</router-link>
+    </div>
     <form @keydown.enter.prevent @submit.prevent="submitForm">
       <h2>ایجاد شغل جدید</h2>
       <NormalInput
@@ -136,15 +137,18 @@ h2 {
   margin-bottom: 20px;
 }
 main {
+  position: relative;
   margin: 0 auto;
   max-width: 400px;
   padding: 20px 16px;
-  margin-top: 30px;
+  margin-top: 62px;
   border: 1px solid #000000;
   background-color: #f2f2f7;
   border-radius: 24px;
   box-shadow: 0px 9px 50px rgba(0, 0, 0, 0.43);
+  
 }
+
 .submit-btn {
   background-color: #30b0c7;
   color: #ffffff;

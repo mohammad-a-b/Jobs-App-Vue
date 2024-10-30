@@ -15,12 +15,20 @@
 
 <style>
 header {
- margin-bottom: 20px;
  display: flex;
  justify-content: center;
  border-bottom: 1px solid #c6c6c6;
 }
 
+.link-container {
+  position: absolute;
+  top: -42px;
+  left: 0;
+  font-weight: 300;
+  font-size: 14px;
+  width: fit-content;
+  border-bottom: 1px solid #000000;
+}
 
 .red-star-input {
   color: #ff3b30;

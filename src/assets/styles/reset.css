@@ -9,6 +9,7 @@
 body {
   direction: rtl;
   padding: 20px 16px;
+  padding-left: calc(100vw - 100%);
 }
 ul {
   list-style: none;
@@ -21,7 +22,8 @@ input {
 input:focus {
   border: 1px #30b0c7 solid;
 }
-input::placeholder,textarea::placeholder{
+input::placeholder,
+textarea::placeholder {
   color: #c7c7cc;
   font-size: 14px;
   font-weight: 200;
