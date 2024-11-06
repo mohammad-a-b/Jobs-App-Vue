@@ -150,6 +150,8 @@ h1 {
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+  margin-top: 30px;   /* فیگما باز نمیشود */
+
 }
 
 .job-title {

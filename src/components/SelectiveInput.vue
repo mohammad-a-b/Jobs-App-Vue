@@ -48,8 +48,9 @@ const modelValue = defineModel({
 
 <style scoped>
 div {
-  margin-top: 10px;
+  margin-top: 20px;
 }
+
 select {
   margin: 5px 0;
   width: 100%;

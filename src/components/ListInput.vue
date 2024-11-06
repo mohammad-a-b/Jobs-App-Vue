@@ -22,7 +22,7 @@ const removeSkill = (index) => {
 </script>
 
 <template>
-  <div>
+  <div  class="container">
     <label>{{ label }}</label>
     <div>
       <input
@@ -41,15 +41,15 @@ const removeSkill = (index) => {
       </li>
     </ul>
 
-    <p v-if="errorMessage && model.length === 0" class="error">
+    <p v-if="errorMessage && model.length === 0" class="error-message">
       {{ errorMessage }}
     </p>
   </div>
 </template>
 
 <style scoped>
-div {
-  margin-top: 10px;
+.container {
+  margin-top: 20px;
 }
 
 .skills-list {
@@ -85,12 +85,5 @@ li {
   padding: 9px 12px;
   border-radius: 4px;
   border: 1px solid #000000;
-}
-
-.error {
-  color: red;
-  font-size: 12px;
-  font-weight: 700;
-  margin-top: 5px;
 }
 </style>

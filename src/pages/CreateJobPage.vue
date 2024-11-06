@@ -1,3 +1,4 @@
+
 <script setup>
 import { ref, onMounted } from "vue";
 import CheckboxInput from "../components/CheckboxInput.vue";
@@ -6,7 +7,7 @@ import NormalInput from "../components/NormalInput.vue";
 import SelectiveInput from "../components/SelectiveInput.vue";
 import TextareaInput from "../components/TextareaInput.vue";
 import { useRouter } from "vue-router";
-import { fetchCompanies, createJob } from "@/api/jobs.js"
+import { fetchCompanies, createJob } from "@/api/jobs.js";
 
 const formData = ref({
   title: "",
@@ -29,7 +30,8 @@ const seniorityOptions = ref([
   { value: "more_than_six_years", label: "بیش از شش سال" },
 ]);
 
-const successMessage = ref("");
+const toastMessage = ref("");
+const showToast = ref(false);
 const router = useRouter();
 
 onMounted(async () => {
@@ -63,15 +65,24 @@ const validateForm = () => {
 const submitForm = async () => {
   validateForm();
   if (Object.values(errorMessages.value).some((msg) => msg)) return;
-
-  await createJob(formData.value);
-  successMessage.value = "شغل با موفقیت ایجاد شد.";
-
-  setTimeout(() => {
-    router.push("/jobs");
-  }, 1000);
+  try {
+    await createJob(formData.value);
+    toastMessage.value = "شغل با موفقیت ایجاد شد.";
+    showToast.value = true;
+    setTimeout(() => {
+      showToast.value = false;
+      router.push("/jobs");
+    }, 1500);
+  } catch {
+    toastMessage.value = "خطا در ایجاد شغل. دوباره تلاش کنید.";
+    showToast.value = true;
+    setTimeout(() => {
+      showToast.value = false;
+    }, 2000);
+  }
 };
 </script>
+
 <template>
   <main>
     <div class="link-container">
@@ -116,6 +127,7 @@ const submitForm = async () => {
         :errorMessage="errorMessages.companyId"
       />
       <CheckboxInput
+      class="m-top"
         v-model="formData.remotePossibility"
         label="امکان دورکاری"
       />
@@ -126,8 +138,8 @@ const submitForm = async () => {
       <button class="submit-btn" type="submit">ثــبــت</button>
     </form>
 
-    <div v-if="successMessage" class="success-message">
-      {{ successMessage }}
+    <div v-if="showToast" class="toast">
+      {{ toastMessage }}
     </div>
   </main>
 </template>
@@ -146,7 +158,6 @@ main {
   background-color: #f2f2f7;
   border-radius: 24px;
   box-shadow: 0px 9px 50px rgba(0, 0, 0, 0.43);
-  
 }
 
 .submit-btn {
@@ -159,12 +170,38 @@ main {
   border-radius: 4px;
   margin-top: 30px;
 }
-.success-message {
-  margin-top: 20px;
-  padding: 10px;
+
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 20px;
+  padding: 14px 25px;
+  border-radius: 8px;
+  font-size: 14.5px;
   background-color: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
-  border-radius: 4px;
+  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
+  animation: slide-in 0.5s, fade-out 0.5s 1.5s forwards;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+.m-top{
+  margin-top: 21px;
 }
 </style>

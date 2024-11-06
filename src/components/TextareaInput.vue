@@ -52,6 +52,9 @@ const handleBlur = () => {
 </template>
 
 <style scoped>
+div{
+  margin-top: 20px;
+}
 textarea {
   width: 100%;
   min-height: 155px;
@@ -64,11 +67,5 @@ textarea {
 textarea:focus {
   border-color: #30b0c7;
   outline: none;
-}
-.error-message {
-  color: red;
-  font-size: 12px;
-  font-weight: 700;
-  margin-top: 5px;
 }
 </style>
