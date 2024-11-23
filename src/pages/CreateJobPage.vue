@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref, onMounted } from "vue";
 import CheckboxInput from "../components/CheckboxInput.vue";
@@ -8,6 +7,7 @@ import SelectiveInput from "../components/SelectiveInput.vue";
 import TextareaInput from "../components/TextareaInput.vue";
 import { useRouter } from "vue-router";
 import { fetchCompanies, createJob } from "@/api/jobs.js";
+import { useToast } from "@/stores/toast-store.js";
 
 const formData = ref({
   title: "",
@@ -30,9 +30,9 @@ const seniorityOptions = ref([
   { value: "more_than_six_years", label: "بیش از شش سال" },
 ]);
 
-const toastMessage = ref("");
-const showToast = ref(false);
 const router = useRouter();
+
+const { showToast } = useToast();
 
 onMounted(async () => {
   const data = await fetchCompanies();
@@ -67,18 +67,10 @@ const submitForm = async () => {
   if (Object.values(errorMessages.value).some((msg) => msg)) return;
   try {
     await createJob(formData.value);
-    toastMessage.value = "شغل با موفقیت ایجاد شد.";
-    showToast.value = true;
-    setTimeout(() => {
-      showToast.value = false;
-      router.push("/jobs");
-    }, 1500);
+    showToast("شغل با موفقیت ایجاد شد.", "success");
+    setTimeout(() => router.push("/jobs"), 1600);
   } catch {
-    toastMessage.value = "خطا در ایجاد شغل. دوباره تلاش کنید.";
-    showToast.value = true;
-    setTimeout(() => {
-      showToast.value = false;
-    }, 2000);
+    showToast("خطا در ایجاد شغل. دوباره تلاش کنید.", "error");
   }
 };
 </script>
@@ -127,7 +119,7 @@ const submitForm = async () => {
         :errorMessage="errorMessages.companyId"
       />
       <CheckboxInput
-      class="m-top"
+        class="m-top"
         v-model="formData.remotePossibility"
         label="امکان دورکاری"
       />
@@ -137,10 +129,6 @@ const submitForm = async () => {
       />
       <button class="submit-btn" type="submit">ثــبــت</button>
     </form>
-
-    <div v-if="showToast" class="toast">
-      {{ toastMessage }}
-    </div>
   </main>
 </template>
 
@@ -201,7 +189,7 @@ main {
     opacity: 0;
   }
 }
-.m-top{
+.m-top {
   margin-top: 21px;
 }
 </style>

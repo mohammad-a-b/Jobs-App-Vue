@@ -1,13 +1,15 @@
-<script setup></script>
+<script setup>
+import Toast from "@/components/Toast.vue";
+</script>
 <template>
   <div id="app">
     <header>
-      <router-link to ="/jobs/create"
+      <router-link to="/jobs/create"
         ><img src="./assets/icons/logo.svg" alt="Logo"
-        
       /></router-link>
     </header>
     <main>
+      <Toast />
       <router-view />
     </main>
   </div>
@@ -15,9 +17,9 @@
 
 <style>
 header {
- display: flex;
- justify-content: center;
- border-bottom: 1px solid #c6c6c6;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #c6c6c6;
 }
 
 .link-container {
