@@ -61,7 +61,7 @@ onMounted(loadJobs);
   <main>
     <div class="job-list">
       <div class="link-container">
-        <router-link to="/jobs/create">صفحه ایجاد شغل</router-link>
+        <router-link class="list" to="/jobs/create">صفحه ایجاد شغل</router-link>
       </div>
       <h1>شغل‌ها</h1>
 
@@ -234,42 +234,31 @@ h2 {
   background: url('data:image/svg+xml;utf8,<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.38889L5 5.38889L9 1.38889" stroke="%231E1E1E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>')
     no-repeat;
 }
+
 .loader {
-  width: 100px;
-  height: 60px;
-  display: flex;
+  width: 17px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: 0 0 0 0 #0004;
+  animation: l2 1.5s infinite linear;
+  position: relative;
   margin: 0 auto;
-  animation: l12-0 0.1s infinite linear;
 }
-.loader::before,
-.loader::after {
+.loader:before,
+.loader:after {
   content: "";
-  flex: 4;
-  background: radial-gradient(at 50% 20%, #0000, #000a) bottom left/20px 20px
-      repeat-x,
-    linear-gradient(red 0 0) bottom/100% 20px no-repeat #ddd;
-  -webkit-mask: repeating-linear-gradient(90deg, #000 0 4px, #0000 0 20px) 8px 0,
-    radial-gradient(farthest-side, #000 90%, #0000) left bottom/20px 20px
-      repeat-x;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 #0004;
+  animation: inherit;
+  animation-delay: -0.1s;
 }
-.loader::after {
-  flex: 1;
-  transform-origin: top;
-  animation: l12-1 1s cubic-bezier(0, 20, 1, 20) infinite;
+.loader:after {
+  animation-delay: 0;
 }
-@keyframes l12-0 {
-  0%,
-  49.9% {
-    transform: scaleX(1);
-  }
-  50%,
-  100% {
-    transform: scaleX(-1);
-  }
-}
-@keyframes l12-1 {
-  100% {
-    transform: rotate(-2deg);
-  }
+@keyframes l2 {
+    100% {box-shadow: 0 0 0 40px #0000}
 }
 </style>

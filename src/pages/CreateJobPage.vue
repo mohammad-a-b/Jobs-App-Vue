@@ -78,7 +78,10 @@ const submitForm = async () => {
 <template>
   <main>
     <div class="link-container">
-      <router-link to="/jobs">لیست شغل‌ها</router-link>
+      <router-link class="create" to="/create/company"
+        >ایجاد شرکت جدید</router-link
+      >
+      <router-link class="list" to="/jobs">لیست شغل‌ها</router-link>
     </div>
     <form @keydown.enter.prevent @submit.prevent="submitForm">
       <h2>ایجاد شغل جدید</h2>
@@ -157,6 +160,13 @@ main {
   font-size: 18px;
   border-radius: 4px;
   margin-top: 30px;
+}
+
+
+.link-container a.create {
+  position: absolute;
+  top: -42px;
+  right: 0;
 }
 
 .toast {

@@ -22,16 +22,19 @@ header {
   border-bottom: 1px solid #c6c6c6;
 }
 
-.link-container {
+.link-container a.list {
   position: absolute;
   top: -42px;
   left: 0;
-  font-weight: 300;
+}
+.link-container {
   font-size: 14px;
   width: fit-content;
+  font-weight: 300;
+}
+.link-container a {
   border-bottom: 1px solid #000000;
 }
-
 .red-star-input {
   color: #ff3b30;
 }
