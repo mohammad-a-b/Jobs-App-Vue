@@ -7,7 +7,7 @@ import { BASE_URL } from "@/config/apiConfig";
 import { useToast } from "@/stores/toast-store.js";
 
 const formData = reactive({
-  name: "",
+  title: "",
   email: "",
   population: "",
   website: "",
@@ -29,7 +29,7 @@ const { showToast } = useToast();
 
 const validateForm = () => {
   errors.value = {};
-  if (!formData.name) errors.value.name = "نام الزامی است.";
+  if (!formData.title) errors.value.title = "نام الزامی است.";
   if (!formData.email) errors.value.email = "ایمیل الزامی است.";
   if (!formData.population) errors.value.population = "جمعیت الزامی است.";
   if (!formData.description) errors.value.description = "شرح الزامی است.";
@@ -41,7 +41,7 @@ const submitForm = async () => {
   if (!validateForm()) return;
 
   const data = new FormData();
-  data.append("name", formData.name);
+  data.append("title", formData.title);
   data.append("email", formData.email);
   data.append("population", formData.population);
   data.append("website", formData.website || "");
@@ -74,10 +74,10 @@ const submitForm = async () => {
     <form @keydown.enter.prevent @submit.prevent="submitForm">
       <h2>ایجاد شرکت جدید</h2>
       <NormalInput
-        v-model="formData.name"
+        v-model="formData.title"
         label="نام"
         placeholder="نام رسمی یا مشهور شرکت"
-        :errorMessage="errors.name"
+        :errorMessage="errors.title"
       />
       <NormalInput
         class="email"
