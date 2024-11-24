@@ -16,16 +16,17 @@ const formData = reactive({
 });
 
 const populations = ref([
-  { value: "less_than_10", label: "کمتر از 10 نفر" },
-  { value: "10_to_50", label: "بین 10 تا 50 نفر" },
-  { value: "50_to_200", label: "بین 50 تا 200 نفر" },
-  { value: "200_to_1000", label: "بین 200 تا 1000 نفر" },
-  { value: "more_than_1000", label: "بیش از 1000 نفر" },
+  { value: "کمتر از 10 نفر", label: "کمتر از 10 نفر" },
+  { value: "بین 10 تا 50 نفر", label: "بین 10 تا 50 نفر" },
+  { value: "بین 50 تا 200 نفر", label: "بین 50 تا 200 نفر" },
+  { value: "بین 200 تا 1000 نفر", label: "بین 200 تا 1000 نفر" },
+  { value: "بیش از 1000 نفر", label: "بیش از 1000 نفر" },
 ]);
 
 const errors = ref({});
 
 const { showToast } = useToast();
+
 const validateForm = () => {
   errors.value = {};
   if (!formData.name) errors.value.name = "نام الزامی است.";
@@ -43,7 +44,7 @@ const submitForm = async () => {
   data.append("name", formData.name);
   data.append("email", formData.email);
   data.append("population", formData.population);
-  data.append("website", formData.website);
+  data.append("website", formData.website || "");
   data.append("logo", formData.logo);
   data.append("description", formData.description);
 
@@ -54,7 +55,8 @@ const submitForm = async () => {
     });
 
     if (!response.ok) {
-      throw new Error("خطا در ارسال فرم");
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "خطا در ارسال فرم");
     }
 
     showToast("فرم با موفقیت ارسال شد!", "success");
@@ -106,6 +108,7 @@ const submitForm = async () => {
         inputType="file"
         :errorMessage="errors.logo"
       />
+
       <TextareaInput
         v-model="formData.description"
         label="شرح"
