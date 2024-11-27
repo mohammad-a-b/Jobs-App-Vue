@@ -3,6 +3,7 @@ import CreateJob from "@/pages/CreateJobPage.vue";
 import JobList from "@/pages/JobsPage.vue";
 import JobDetail from "@/pages/jobPage.vue";
 import CreateCompany from "@/pages/CreateCompanyPage.vue";
+import companiesList from "@/pages/companiesPage.vue";
 
 const routes = [
   {
@@ -13,6 +14,7 @@ const routes = [
   { path: "/jobs", component: JobList },
   { path: "/jobs/:id", component: JobDetail },
   { path: "/create/company", component: CreateCompany },
+  { path: "/companies", component: companiesList },
 ];
 
 const router = createRouter({

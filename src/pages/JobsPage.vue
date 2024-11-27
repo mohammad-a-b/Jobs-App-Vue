@@ -1,23 +1,12 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { fetchJobs } from "@/api/jobs";
+import { fetchJobs, deleteLastJob } from "@/api/jobs.js";
 
 const jobs = ref([]);
 const searchQuery = ref("");
 const selectedCompany = ref("همه شرکت‌ها");
 const selectedJobType = ref("");
 const loading = ref(false);
-
-const loadJobs = async () => {
-  loading.value = true;
-  try {
-    jobs.value = await fetchJobs();
-  } catch (err) {
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
-};
 
 const formatSalary = (salary) => {
   if (salary === 0) return "توافقی";
@@ -54,7 +43,15 @@ const filteredJobs = computed(() => {
   return filtered;
 });
 
-onMounted(loadJobs);
+const deleteLastJobHandler = () => {
+  deleteLastJob(jobs.value);
+};
+
+onMounted(async () => {
+  loading.value = true;
+  jobs.value = await fetchJobs();
+  loading.value = false;
+});
 </script>
 
 <template>
@@ -87,6 +84,10 @@ onMounted(loadJobs);
           </select>
         </div>
       </div>
+
+      <button class="delete" @click="deleteLastJobHandler">
+        حذف آخرین شغل
+      </button>
 
       <div v-if="loading"><div class="loader"></div></div>
       <div v-else>
@@ -199,7 +200,7 @@ h2 {
 
 .selectors {
   display: flex;
-  margin: 11px 0 33px 0;
+  margin: 11px 0 25px 0;
   gap: 18px;
 }
 
@@ -220,6 +221,15 @@ h2 {
   -moz-appearance: none;
   outline: none;
   width: 100%;
+}
+.delete {
+  background-color: #ff645cd3;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: 2px 5px 7px rgba(0, 0, 0, 0.321);
 }
 
 .custom-select:after {
@@ -259,6 +269,8 @@ h2 {
   animation-delay: 0;
 }
 @keyframes l2 {
-    100% {box-shadow: 0 0 0 40px #0000}
+  100% {
+    box-shadow: 0 0 0 40px #0000;
+  }
 }
 </style>

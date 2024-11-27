@@ -1,10 +1,14 @@
+
+
+
 <script setup>
 import { reactive, ref } from "vue";
 import NormalInput from "@/components/NormalInput.vue";
 import SelectiveInput from "@/components/SelectiveInput.vue";
 import TextareaInput from "@/components/TextareaInput.vue";
-import { BASE_URL } from "@/config/apiConfig";
 import { useToast } from "@/stores/toast-store.js";
+import FileInput from "@/components/FileInput.vue";
+import { createCompany } from "@/api/jobs.js";
 
 const formData = reactive({
   title: "",
@@ -24,7 +28,6 @@ const populations = ref([
 ]);
 
 const errors = ref({});
-
 const { showToast } = useToast();
 
 const validateForm = () => {
@@ -40,28 +43,12 @@ const validateForm = () => {
 const submitForm = async () => {
   if (!validateForm()) return;
 
-  const data = new FormData();
-  data.append("title", formData.title);
-  data.append("email", formData.email);
-  data.append("population", formData.population);
-  data.append("website", formData.website || "");
-  data.append("logo", formData.logo);
-  data.append("description", formData.description);
-
   try {
-    const response = await fetch(`${BASE_URL}/companies`, {
-      method: "POST",
-      body: data,
-    });
-
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse.message || "خطا در ارسال فرم");
-    }
-
+    await createCompany(formData);
     showToast("فرم با موفقیت ارسال شد!", "success");
+    
   } catch (error) {
-    showToast(error.message, "error");
+    showToast(error.message || "خطا در ارسال فرم", "error");
   }
 };
 </script>
@@ -101,26 +88,21 @@ const submitForm = async () => {
         :errorMessage="errors.website"
         :isRequired="false"
       />
-      <NormalInput
-        v-model="formData.logo"
+      <FileInput
         label="لوگو"
-        placeholder="png/jpg/jpeg"
-        inputType="file"
         :errorMessage="errors.logo"
+        @file-selected="(file) => (formData.logo = file)"
       />
-
       <TextareaInput
         v-model="formData.description"
         label="شرح"
         placeholder="شرح مختصری از شرکت"
         :errorMessage="errors.description"
       />
-
       <button class="submit-btn" type="submit">ثــبــت</button>
     </form>
   </main>
 </template>
-
 <style scoped>
 h2 {
   margin-bottom: 20px;
