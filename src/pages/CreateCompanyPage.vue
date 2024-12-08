@@ -1,16 +1,16 @@
-
-
-
 <script setup>
-import { reactive, ref } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import NormalInput from "@/components/NormalInput.vue";
 import SelectiveInput from "@/components/SelectiveInput.vue";
 import TextareaInput from "@/components/TextareaInput.vue";
-import { useToast } from "@/stores/toast-store.js";
 import FileInput from "@/components/FileInput.vue";
+import { useToast } from "@/stores/toast-store.js";
+import { useSubmitButtonText } from "@/stores/submit-button-text-store.js";
 import { createCompany } from "@/api/jobs.js";
+import ConfirmationModal from "@/components/ConfirmationModal.vue";
 
-const formData = reactive({
+const formData = ref({
   title: "",
   email: "",
   population: "",
@@ -29,27 +29,40 @@ const populations = ref([
 
 const errors = ref({});
 const { showToast } = useToast();
+const { buttonState, setSubmitting, setSubmitted, resetText } = useSubmitButtonText();
+const confirmationModal = ref(null);
+const router = useRouter();
 
 const validateForm = () => {
   errors.value = {};
-  if (!formData.title) errors.value.title = "نام الزامی است.";
-  if (!formData.email) errors.value.email = "ایمیل الزامی است.";
-  if (!formData.population) errors.value.population = "جمعیت الزامی است.";
-  if (!formData.description) errors.value.description = "شرح الزامی است.";
-  if (!formData.logo) errors.value.logo = "لوگو الزامی است.";
+  if (!formData.value.title) errors.value.title = "نام الزامی است.";
+  if (!formData.value.email) errors.value.email = "ایمیل الزامی است.";
+  if (!formData.value.population) errors.value.population = "جمعیت الزامی است.";
+  if (!formData.value.description) errors.value.description = "شرح الزامی است.";
+  if (!formData.value.logo) errors.value.logo = "لوگو الزامی است.";
   return Object.keys(errors.value).length === 0;
 };
 
 const submitForm = async () => {
   if (!validateForm()) return;
 
-  try {
-    await createCompany(formData);
-    showToast("فرم با موفقیت ارسال شد!", "success");
-    
-  } catch (error) {
-    showToast(error.message || "خطا در ارسال فرم", "error");
-  }
+  confirmationModal.value.showModal(async () => {
+    setSubmitting();
+
+    try {
+      await createCompany(formData.value);
+      showToast("فرم با موفقیت ارسال شد!", "success");
+      setSubmitted();
+
+      setTimeout(() => {
+        router.push("/companies");
+        resetText();
+      }, 1000);
+    } catch (error) {
+      showToast(error.message || "خطا در ارسال فرم", "error");
+      resetText();
+    }
+  });
 };
 </script>
 
@@ -99,10 +112,12 @@ const submitForm = async () => {
         placeholder="شرح مختصری از شرکت"
         :errorMessage="errors.description"
       />
-      <button class="submit-btn" type="submit">ثــبــت</button>
+      <button class="submit-btn" type="submit">{{ buttonState.text }}</button>
     </form>
+    <ConfirmationModal ref="confirmationModal" />
   </main>
 </template>
+
 <style scoped>
 h2 {
   margin-bottom: 20px;
@@ -129,6 +144,7 @@ main {
   border-radius: 4px;
   margin-top: 30px;
 }
+
 .email,
 .web {
   margin-top: 20px;

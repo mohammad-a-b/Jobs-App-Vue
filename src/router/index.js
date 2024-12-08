@@ -3,7 +3,7 @@ import CreateJob from "@/pages/CreateJobPage.vue";
 import JobList from "@/pages/JobsPage.vue";
 import JobDetail from "@/pages/jobPage.vue";
 import CreateCompany from "@/pages/CreateCompanyPage.vue";
-import companiesList from "@/pages/companiesPage.vue";
+import companiesList from "@/pages/CompaniesPage.vue";
 
 const routes = [
   {

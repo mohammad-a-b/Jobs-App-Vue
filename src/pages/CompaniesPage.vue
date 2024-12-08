@@ -30,7 +30,9 @@ onMounted(async () => {
   <main>
     <div class="company-list">
       <div class="link-container">
-        <router-link class="list" to="/create/company">صفحه ایجاد شرکت</router-link>
+        <router-link class="list" to="/create/company"
+          >صفحه ایجاد شرکت</router-link
+        >
       </div>
       <h1>شرکت‌ها</h1>
 
@@ -44,7 +46,11 @@ onMounted(async () => {
       <div v-else>
         <p v-if="filteredCompanies.length === 0">هیچ شرکتی یافت نشد</p>
         <div class="items" v-else>
-          <ul v-for="company in filteredCompanies" :key="company.id" class="company-item">
+          <ul
+            v-for="company in filteredCompanies"
+            :key="company.id"
+            class="company-item"
+          >
             <li :to="`/companies/${company._id}`">
               <div class="name-and-logo">
                 <img

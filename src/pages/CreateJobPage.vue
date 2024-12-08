@@ -8,6 +8,8 @@ import TextareaInput from "../components/TextareaInput.vue";
 import { useRouter } from "vue-router";
 import { fetchCompanies, createJob } from "@/api/jobs.js";
 import { useToast } from "@/stores/toast-store.js";
+import { useSubmitButtonText } from "@/stores/submit-button-text-store.js";
+import ConfirmationModal from "../components/ConfirmationModal.vue";
 
 const formData = ref({
   title: "",
@@ -19,7 +21,6 @@ const formData = ref({
   remotePossibility: false,
   immediateRequirement: false,
 });
-
 const errorMessages = ref({});
 const companies = ref([]);
 const seniorityOptions = ref([
@@ -31,8 +32,10 @@ const seniorityOptions = ref([
 ]);
 
 const router = useRouter();
-
 const { showToast } = useToast();
+const { buttonState, setSubmitting, setSubmitted, resetText } =
+  useSubmitButtonText();
+const confirmationModal = ref(null);
 
 onMounted(async () => {
   const data = await fetchCompanies();
@@ -62,16 +65,28 @@ const validateForm = () => {
   validateField("companyId", "نام شرکت نمی‌تواند خالی باشد.");
 };
 
-const submitForm = async () => {
+const submitForm = () => {
   validateForm();
   if (Object.values(errorMessages.value).some((msg) => msg)) return;
-  try {
-    await createJob(formData.value);
-    showToast("شغل با موفقیت ایجاد شد.", "success");
-    setTimeout(() => router.push("/jobs"), 1600);
-  } catch {
-    showToast("خطا در ایجاد شغل. دوباره تلاش کنید.", "error");
-  }
+
+  confirmationModal.value.showModal(async () => {
+    setSubmitting();
+
+    try {
+      await createJob(formData.value);
+      showToast("شغل با موفقیت ایجاد شد.", "success");
+
+      setSubmitted();
+
+      setTimeout(() => {
+        router.push("/jobs");
+        resetText();
+      }, 1000);
+    } catch {
+      showToast("خطا در ایجاد شغل. دوباره تلاش کنید.", "error");
+      resetText();
+    }
+  });
 };
 </script>
 
@@ -130,8 +145,9 @@ const submitForm = async () => {
         v-model="formData.immediateRequirement"
         label="آگهی فوری"
       />
-      <button class="submit-btn" type="submit">ثــبــت</button>
+      <button class="submit-btn" type="submit">{{ buttonState.text }}</button>
     </form>
+    <ConfirmationModal ref="confirmationModal" />
   </main>
 </template>
 
@@ -161,7 +177,6 @@ main {
   border-radius: 4px;
   margin-top: 30px;
 }
-
 
 .link-container a.create {
   position: absolute;
